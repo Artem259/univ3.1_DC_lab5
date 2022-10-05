@@ -23,6 +23,6 @@ public class Application {
     }
 
     public static void main(String[] args) {
-        new Application(4, 2, 10).start();
+        new Application(4, 3, 10).start();
     }
 }

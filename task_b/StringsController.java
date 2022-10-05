@@ -7,6 +7,8 @@ public class StringsController {
     private boolean lastCheckResult;
 
     public StringsController(int stringsAmount, int equalsRequired, int stringsSize) {
+        if(equalsRequired > stringsAmount)
+            throw new RuntimeException();
         this.stringsAmount = stringsAmount;
         this.equalsRequired = equalsRequired;
         strings = new RandString[stringsAmount];
