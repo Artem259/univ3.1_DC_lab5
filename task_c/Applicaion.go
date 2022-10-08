@@ -9,7 +9,7 @@ import (
 
 type Barrier struct {
 	n      int
-	c1, c2 int
+	f1, f2 bool
 	w1, w2 sync.WaitGroup
 	mx     sync.Mutex
 }
@@ -25,13 +25,10 @@ func (b *Barrier) awaitFirst() {
 	b.w1.Done()
 	b.w1.Wait()
 	b.mx.Lock()
-	if b.c1 == 0 {
-		b.w2.Add(3)
-		b.c1++
-	} else if b.c1 == b.n-1 {
-		b.c1 = 0
-	} else {
-		b.c1++
+	if b.f1 == false {
+		b.f2 = false
+		b.w2.Add(b.n)
+		b.f1 = true
 	}
 	b.mx.Unlock()
 }
@@ -40,13 +37,10 @@ func (b *Barrier) awaitSecond() {
 	b.w2.Done()
 	b.w2.Wait()
 	b.mx.Lock()
-	if b.c2 == 0 {
-		b.w1.Add(3)
-		b.c2++
-	} else if b.c2 == b.n-1 {
-		b.c2 = 0
-	} else {
-		b.c2++
+	if b.f2 == false {
+		b.f1 = false
+		b.w1.Add(b.n)
+		b.f2 = true
 	}
 	b.mx.Unlock()
 }
@@ -86,7 +80,7 @@ func goroutine(array, results []int, thisI int, barrier *Barrier, f *sync.WaitGr
 		randN := []int{-1, 1}[rand.Intn(2)]
 		array[randI] += randN
 		results[thisI] = sumOfArray(array)
-		//fmt.Println("Second ", thisI+1)
+		fmt.Println("Second ", thisI+1)
 		barrier.awaitSecond()
 	}
 	f.Done()
