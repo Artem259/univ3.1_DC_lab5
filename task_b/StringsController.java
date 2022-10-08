@@ -4,7 +4,7 @@ public class StringsController {
     private final int stringsAmount;
     private final int equalsRequired;
     private final RandString[] strings;
-    private boolean lastCheckResult;
+    private volatile boolean lastCheckResult;
 
     public StringsController(int stringsAmount, int equalsRequired, int stringsSize) {
         if(equalsRequired > stringsAmount)
